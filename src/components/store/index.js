@@ -14,7 +14,7 @@ export const store = new Vuex.Store({
         modelOpened : false,
         cityModels : new Array(),
         currentCityInfo : ListData.defaultData,
-
+        listInfoWeather : ListData.defaultListWeather,
     },
 
     // Mutation 
@@ -30,7 +30,8 @@ export const store = new Vuex.Store({
         },
 
         getCurrentCityInfo(state, payload) {
-            Vue.set(state, 'currentCityInfo', payload);
+            log('getCurrentCityInfo')
+            Vue.set(state, 'listInfoWeather', payload);
         }
         
     },
@@ -48,24 +49,31 @@ export const store = new Vuex.Store({
         },
         
         async getCityInfoByNameAction (context, payload){
+            log('getCityInfoByNameAction')
             // call axios
             let url = ListData.urlBuilder(payload);
+            // this result will be an object this a list 
             let result = await axios.get(url);
             let data = result.data;
-            log(payload);
-            log(data);
-            if(data != null) {
-                let obj = {
-                    ...data,
-                    temp: Math.round(data.main.temp - 273.15),
-                    img: ListData.listImages[data.weather[0].main]
-                }
+             
+            if(data.cod==200) {
+                // all rights 
+                // log(data.list);
+                //     let obj = {
+                //         ...data.list[0],
+                //         temp: Math.round(data.list[0].main.temp - 273.15),
+                //         img: ListData.listImages[data.list[0].weather[0].main]
+                //     }
+                // context.commit('getCurrentCityInfo', obj)
+               
+                context.commit('getCurrentCityInfo', data.list);
 
-                context.commit('getCurrentCityInfo', obj)
-
+            }else {
+                // handle the Exception in this case 
+                // display notification for the user 
             }
+          
         } 
-
     },
 
     getters: {
@@ -78,8 +86,10 @@ export const store = new Vuex.Store({
         },
 
         getCurrentCityInfoGetter(state) {
-            log('inside Getters')
-            return state.currentCityInfo;
+            //log('inside Getters')
+            //return state.currentCityInfo;
+            log('getCurrentCityInfo getters');
+            return state.listInfoWeather;
         }
 
     }

@@ -1,14 +1,16 @@
 <template>
+<div> 
+    
            <el-col :span="7" class="weather-info-section">
-
+ 
                <el-row :gutter="12" class="m-t-250">
                         <el-col :span="24" class="center p-10">
-                        <img :src="currentCityInfo.img" alt="test" class="image-weather"/>
+                        <!-- <img :src="listInfoWeather[0].img" alt="test" class="image-weather"/> -->
                         </el-col>
                 </el-row>
                 <el-row>
                         <el-col :span="24" class="center m-5">
-                            <span class="color-w">{{currentCityInfo.weather[0].main}}</span>
+                            <span class="color-w">{{listInfoWeather.list[0].weather[0].main}}</span>
                         </el-col>
                  </el-row>
                  <el-row>
@@ -19,21 +21,21 @@
                   
                  <el-row>
                         <el-col :span="24" class="center m-5 degree-info">
-                                <span class="color-w">{{currentCityInfo.temp}}</span>
+                                <span class="color-w">{{listInfoWeather.list[0].main.temp}}</span>
                                 <img src="../../assets/celsius.svg" alt="" width="30">
                         </el-col>
                 </el-row>
 
                 <el-row>
                         <el-col :span="24" class="center m-5">
-                                <span class="color-w">{{currentCityInfo.name}}</span>
+                                <span class="color-w">{{listInfoWeather.city.name}}</span>
                         </el-col>
                 </el-row>
 
                   <el-row class="center color-w" >
                       <el-col :span="5" class="center center-v-h" style="margin-right:4px">
                           <span>Sun rise</span>
-                          <span>{{new Date(currentCityInfo.sys.sunrise * 1000).getHours()+":"+new Date(currentCityInfo.sys.sunrise * 1000).getMinutes()}}</span>
+                          <span>{{new Date(listInfoWeather.city.sunrise * 1000).getHours()+":"+new Date(listInfoWeather.city.sunrise * 1000).getMinutes()}}</span>
                       </el-col>
                         <el-col :span="12" class="center">
                                 <el-slider v-model="value1"></el-slider>
@@ -41,37 +43,50 @@
 
                         <el-col :span="5" class="center-v-h">
                           <span>Sun set</span>
-                          <span>{{new Date(currentCityInfo.sys.sunset * 1000).getHours()+":"+new Date(currentCityInfo.sys.sunset * 1000).getMinutes()}}</span>
+                          <span>{{new Date(listInfoWeather.city.sunset * 1000).getHours()+":"+new Date(listInfoWeather.city.sunset * 1000).getMinutes()}}</span>
                       </el-col>
                 </el-row>
-
-                
+ 
 
             </el-col>
-
+</div>
 </template>
 
 <script>
-
-import {mapState} from 'vuex';
+import { log } from 'util';
+//import {mapState} from 'vuex';
 
 export default {
     name: 'weather-details',
-    computed: mapState(['currentCityInfo']),
+   // computed: mapState(['listInfoWeather']),
+
     data() {
         return {
-            currentCity : this.currentCityInfo,
-            // images are local 
-            value1: new Date().getHours()
-         
+            value1: new Date().getHours(),
+            listInfoWeather: this.$store.getters.getCurrentCityInfoGetter,
         }
     },
 
+    
     watch: {
         getData() {
             let obj = this.$store.getters.getCurrentCityInfoGetter;
             return obj;
+        },
+
+        currentCity() {
+            this.currentCity = this.$store.getters.getCurrentCityInfoGetter;
+            log(this.$store.getters.getCurrentCityInfoGetter);
         }
+    },
+
+    created() {
+        this.$store.subscribe((mutation, state)=> {
+            log(mutation);
+          if(mutation.type === 'getCurrentCityInfo') {
+              this.listInfoWeather = state.listInfoWeather;
+          }
+        });
     }
 }
 </script>

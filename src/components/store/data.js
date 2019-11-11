@@ -44,7 +44,60 @@ export default {
          "name": "No Place yet",
          "cod": 0
  },
- 
+
+    defaultListWeather : {
+        "code": "200",
+        "message": 0,
+        "cnt": 40,
+        "list": [
+                    {
+                    "dt": 1573430400,
+                    "main": {
+                    "temp": 278.13,
+                    "temp_min": 278.13,
+                    "temp_max": 278.71,
+                    "pressure": 1014,
+                    "sea_level": 1014,
+                    "grnd_level": 1004,
+                    "humidity": 87,
+                    "temp_kf": -0.58
+                    },
+                    "weather": [
+                    {
+                    "id": 802,
+                    "main": "Clouds",
+                    "description": "scattered clouds",
+                    "icon": "03n"
+                    }
+                    ],
+                    "clouds": {
+                    "all": 48
+                    },
+                    "wind": {
+                    "speed": 2.41,
+                    "deg": 202
+                    },
+                    "sys": {
+                    "pod": "n"
+                    },
+                    "dt_txt": "2019-11-11 00:00:00"
+                    } 
+                ],
+                
+                "city": {
+                    "id": 2988507,
+                    "name": "Paris",
+                    "coord": {
+                    "lat": 48.8566,
+                    "lon": 2.3515
+                    },
+                    "country": "FR",
+                    "population": 2138551,
+                    "timezone": 3600,
+                    "sunrise": 1573368669,
+                    "sunset": 1573402674
+                    }
+                },
 
     // default 
     listImages : {
