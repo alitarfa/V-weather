@@ -1,241 +1,238 @@
 <template>
-<div> 
-    
-           <el-col :span="7" class="weather-info-section">
- 
-               <el-row :gutter="12" class="m-t-250">
-                        <el-col :span="24" class="center p-10">
-                        <!-- <img :src="listInfoWeather[0].img" alt="test" class="image-weather"/> -->
-                        </el-col>
-                </el-row>
-                <el-row>
-                        <el-col :span="24" class="center m-5">
-                            <span class="color-w">{{listInfoWeather.list[0].weather[0].main}}</span>
-                        </el-col>
-                 </el-row>
-                 <el-row>
-                        <el-col :span="24" class="center m-5">
-                            <span class="color-w">12/10/2019</span>
-                        </el-col>
-                 </el-row>
-                  
-                 <el-row>
-                        <el-col :span="24" class="center m-5 degree-info">
-                                <span class="color-w">{{listInfoWeather.list[0].main.temp}}</span>
-                                <img src="../../assets/celsius.svg" alt="" width="30">
-                        </el-col>
-                </el-row>
 
-                <el-row>
-                        <el-col :span="24" class="center m-5">
-                                <span class="color-w">{{listInfoWeather.city.name}}</span>
-                        </el-col>
-                </el-row>
+    <el-col :span="7" class="weather-info-section">
+     
+      <el-row :gutter="12" class="m-t-250">
+        <el-col :span="24" class="center p-10">
+          <img :src="currentImage" alt="test" class="image-weather"/>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24" class="center m-5">
+          <span class="color-w">{{listInfoWeather.list[0].weather[0].main}}</span>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="24" class="center m-5">
+          <span class="color-w">12/10/2019</span>
+        </el-col>
+      </el-row>
 
-                  <el-row class="center color-w" >
-                      <el-col :span="5" class="center center-v-h" style="margin-right:4px">
-                          <span>Sun rise</span>
-                          <span>{{new Date(listInfoWeather.city.sunrise * 1000).getHours()+":"+new Date(listInfoWeather.city.sunrise * 1000).getMinutes()}}</span>
-                      </el-col>
-                        <el-col :span="12" class="center">
-                                <el-slider v-model="value1"></el-slider>
-                        </el-col>
+      <el-row>
+        <el-col :span="24" class="center m-5 degree-info">
+          <span class="color-w">{{currentTmp}}</span>
+          <img src="../../assets/celsius.svg" alt width="30" />
+        </el-col>
+      </el-row>
 
-                        <el-col :span="5" class="center-v-h">
-                          <span>Sun set</span>
-                          <span>{{new Date(listInfoWeather.city.sunset * 1000).getHours()+":"+new Date(listInfoWeather.city.sunset * 1000).getMinutes()}}</span>
-                      </el-col>
-                </el-row>
- 
+      <el-row>
+        <el-col :span="24" class="center m-5">
+          <span class="color-w">{{listInfoWeather.city.name}}</span>
+        </el-col>
+      </el-row>
 
-            </el-col>
-</div>
+      <el-row class="center color-w">
+        <el-col :span="5" class="center center-v-h" style="margin-right:4px">
+          <span>Sun rise</span>
+          <span>{{new Date(listInfoWeather.city.sunrise * 1000).getHours()+":"+new Date(listInfoWeather.city.sunrise * 1000).getMinutes()}}</span>
+        </el-col>
+        <el-col :span="12" class="center">
+          <el-slider v-model="value1"></el-slider>
+        </el-col>
+
+        <el-col :span="5" class="center-v-h">
+          <span>Sun set</span>
+          <span>{{new Date(listInfoWeather.city.sunset * 1000).getHours()+":"+new Date(listInfoWeather.city.sunset * 1000).getMinutes()}}</span>
+        </el-col>
+      </el-row>
+    </el-col>
+
 </template>
 
 <script>
-import { log } from 'util';
-//import {mapState} from 'vuex';
+import { log } from "util";
+import data from "../store/data";
+ 
 
 export default {
-    name: 'weather-details',
-   // computed: mapState(['listInfoWeather']),
+  name: "weather-details",
+ 
+  data() {
+    return {
+      value1: new Date().getHours(),
+      listInfoWeather: this.$store.getters.getCurrentCityInfoGetter,
+      currentImage: "",
+      currentTmp : 0,
+    };
+  },
 
-    data() {
-        return {
-            value1: new Date().getHours(),
-            listInfoWeather: this.$store.getters.getCurrentCityInfoGetter,
-        }
+  watch: {
+    getData() {
+      let obj = this.$store.getters.getCurrentCityInfoGetter;
+      return obj;
     },
 
-    
-    watch: {
-        getData() {
-            let obj = this.$store.getters.getCurrentCityInfoGetter;
-            return obj;
-        },
-
-        currentCity() {
-            this.currentCity = this.$store.getters.getCurrentCityInfoGetter;
-            log(this.$store.getters.getCurrentCityInfoGetter);
-        }
-    },
-
-    created() {
-        this.$store.subscribe((mutation, state)=> {
-            log(mutation);
-          if(mutation.type === 'getCurrentCityInfo') {
-              this.listInfoWeather = state.listInfoWeather;
-          }
-        });
+    currentCity() {
+      this.currentCity = this.$store.getters.getCurrentCityInfoGetter;
+      log(this.$store.getters.getCurrentCityInfoGetter);
     }
-}
+  },
+
+  created() {
+    this.$store.subscribe((mutation, state) => {
+      log(mutation);
+      if (mutation.type === "getCurrentCityInfo") {
+        this.listInfoWeather = state.listInfoWeather;
+        this.currentImage    = data.listImages[this.listInfoWeather.list[0].weather[0].main];
+        this.currentTmp      = Math.round(this.listInfoWeather.list[0].main.temp - 273.15)
+      }
+    });
+  }
+};
 </script>
 
 
 <style>
+.image-weather {
+  width: 130px;
+}
 
-    .image-weather {
-        width: 130px;
-    }
+.p-10 {
+  padding: 15px;
+}
+.info-w-m {
+  display: flex;
+  justify-content: center;
+}
 
-    .p-10 {
-        padding: 15px;
-    }
-    .info-w-m {
-      display: flex;
-      justify-content: center;
-    }
+.center-v-h {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-size: 0.8em;
+}
 
-    .center-v-h {
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        font-size: 0.8em;
-    }
+.image {
+  width: 100%;
+  height: 130px;
+  display: block;
+}
 
-    .image {
-        width: 100%;
-        height: 130px;
-        display: block;
-    }
+.search-input el-input {
+  border: none;
+}
 
-    .search-input el-input {
-      border: none;
-    }
+.search-input {
+  height: 58px;
+  margin-top: 45px;
+  margin-left: 50px;
+}
 
-    .search-input {
-      height: 58px;
-      margin-top: 45px;
-      margin-left: 50px;
-    }
-    
-    .card-style {
-      padding: '0px' ;
-      border-radius:'20px'
-    }
-    
-    .card-container {
-        height: 100%;
-        width: 100%;
-        padding: 0px;
-    }
-    
+.card-style {
+  padding: "0px";
+  border-radius: "20px";
+}
 
-    .continer-weather {
-        padding: 50px;
-        height: 800px;
-        width: 100%;
-    }
+.card-container {
+  height: 100%;
+  width: 100%;
+  padding: 0px;
+}
 
-    .wather-two-section {
-        height: 700px;
-        width: 100%;
-    }
+.continer-weather {
+  padding: 50px;
+  height: 800px;
+  width: 100%;
+}
 
-    .weather-info-section {
-        height: 100%;
-        background-color: #100e3b;
-    }  
+.wather-two-section {
+  height: 700px;
+  width: 100%;
+}
 
-    .weather-city-section {
-        height: 100%;
-        background-color: #f2fbff;
-    }
-    
-    .color-w {
-        color: white;
-    }
+.weather-info-section {
+  height: 100%;
+  background-color: #100e3b;
+}
 
-    .center {
-        text-align: center;
-    }
+.weather-city-section {
+  height: 100%;
+  background-color: #f2fbff;
+}
 
-    .left {
-        text-align: left;
-    }
-    .right {
-        text-align: right;
-    }
+.color-w {
+  color: white;
+}
 
-    .m-10 {
-        margin: 10px;
-    }
+.center {
+  text-align: center;
+}
 
-    .m-5 {
-        margin: 5px;
-    }
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
 
+.m-10 {
+  margin: 10px;
+}
 
-    .red-c {
-        background: red;
-    }
+.m-5 {
+  margin: 5px;
+}
 
-    .green-c {
-        background: green;
-    }
+.red-c {
+  background: red;
+}
 
-    .m-t-250 {
-        margin-top: 150px;
-    }
+.green-c {
+  background: green;
+}
 
-    .degree-info {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 20px;
-        height: 150px;
-    }
+.m-t-250 {
+  margin-top: 150px;
+}
 
-    .degree-info span{
-        font-size: 6em;
-        font-family: 'Montserrat', sans-serif;
-    }
+.degree-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  height: 150px;
+}
 
-    .font-Montserrat{
-        font-family: 'Montserrat', sans-serif;
-    }
+.degree-info span {
+  font-size: 6em;
+  font-family: "Montserrat", sans-serif;
+}
 
-    .title-forcast {
-        font-size: 2em;
-        margin-left: 50px;
-        color: #202b5c;
-    }
+.font-Montserrat {
+  font-family: "Montserrat", sans-serif;
+}
 
-    .title-forcast p span {
-        color: #100e3b;
-        font-style: bold;
-    }
+.title-forcast {
+  font-size: 2em;
+  margin-left: 50px;
+  color: #202b5c;
+}
 
-    .card-add-city {
-        margin: 10px;
-        height: 175px;
-        width: 130px;
-        border-radius: 20px;
-    }
+.title-forcast p span {
+  color: #100e3b;
+  font-style: bold;
+}
 
-    .list-city {
-        display: flex;
-    }
+.card-add-city {
+  margin: 10px;
+  height: 175px;
+  width: 130px;
+  border-radius: 20px;
+}
+
+.list-city {
+  display: flex;
+}
 </style>

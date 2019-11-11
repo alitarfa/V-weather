@@ -66,7 +66,7 @@ export const store = new Vuex.Store({
                 //     }
                 // context.commit('getCurrentCityInfo', obj)
                
-                context.commit('getCurrentCityInfo', data.list);
+                context.commit('getCurrentCityInfo', data);
 
             }else {
                 // handle the Exception in this case 
