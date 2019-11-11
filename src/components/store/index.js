@@ -86,8 +86,6 @@ export const store = new Vuex.Store({
         },
 
         getCurrentCityInfoGetter(state) {
-            //log('inside Getters')
-            //return state.currentCityInfo;
             log('getCurrentCityInfo getters');
             return state.listInfoWeather;
         }
