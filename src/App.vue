@@ -38,9 +38,18 @@
                       :data="tableData"
                       style="width: 100%; background:#f2fbff"
                     >
-                      <el-table-column width="180">
+                       <el-table-column width="180">
                         <template slot-scope="scope">
                           <span>{{scope.row.data}}</span>
+                        </template>
+                      </el-table-column>
+
+                      <el-table-column width="180">
+                        <template slot-scope="scope">
+                           <div class="">
+                             <span>{{scope.row.temp}}</span>
+                             <span style="margin-left:5px">C</span>
+                            </div>
                         </template>
                       </el-table-column>
 
@@ -171,7 +180,8 @@ export default {
             data: this.getDayName(list[i].dt),
             humidity: list[i].main.humidity,
             wind: list[i].wind.speed,
-            clouds: list[i].clouds.all
+            clouds: list[i].clouds.all,
+            temp : Math.round(list[i].main.temp - 273.15)
           });
         }
       }
