@@ -6,7 +6,6 @@ import ListData from './data';
 
 Vue.use(Vuex);
 
-
 export const store = new Vuex.Store({
  
     // state 
@@ -15,6 +14,7 @@ export const store = new Vuex.Store({
         cityModels : new Array(),
         currentCityInfo : ListData.defaultData,
         listInfoWeather : ListData.defaultListWeather,
+        currentPositionName : 'test',
     },
 
     // Mutation 
@@ -32,6 +32,11 @@ export const store = new Vuex.Store({
         getCurrentCityInfo(state, payload) {
             log('getCurrentCityInfo')
             Vue.set(state, 'listInfoWeather', payload);
+        },
+
+        getCurrentPositionName(state, payload) {
+            log('Mutation::CurrentPostionName');
+            Vue.set(state, 'currentPositionName', payload);
         }
         
     },
@@ -57,23 +62,22 @@ export const store = new Vuex.Store({
             let data = result.data;
              
             if(data.cod==200) {
-                // all rights 
-                // log(data.list);
-                //     let obj = {
-                //         ...data.list[0],
-                //         temp: Math.round(data.list[0].main.temp - 273.15),
-                //         img: ListData.listImages[data.list[0].weather[0].main]
-                //     }
-                // context.commit('getCurrentCityInfo', obj)
-               
                 context.commit('getCurrentCityInfo', data);
-
             }else {
                 // handle the Exception in this case 
                 // display notification for the user 
             }
           
-        } 
+        },
+
+        async getCurrentPostitionNameAction(context, payload) {
+            log('Action::CurrentPostionName');
+            let url = ListData.urlBuilderGPS(payload.lat,payload.log);
+            let result = await axios.get(url);
+            let data = result.data;
+            log(data.results[0].components.city);
+            context.commit('getCurrentPositionName',data.results[0].components.city);
+        }
     },
 
     getters: {
@@ -88,10 +92,13 @@ export const store = new Vuex.Store({
         getCurrentCityInfoGetter(state) {
             log('getCurrentCityInfo getters');
             return state.listInfoWeather;
+        },
+
+        getCurrrentPositionNameGetter(state) {
+            log('Getters::getCurrentPositionName');
+            return state.currentPositionName;
         }
-
     }
-
-
+    
 
 });

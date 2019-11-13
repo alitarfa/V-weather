@@ -112,4 +112,8 @@ export default {
    urlBuilder : (payload) => {
        return "http://api.openweathermap.org/data/2.5/forecast?q="+payload+"&appid=0ada432b59deb9716c357092c5f79be6";
    },
+
+   urlBuilderGPS: (lat, log) => {
+       return "https://api.opencagedata.com/geocode/v1/json?q="+lat+"%2C%20"+log+"&key=b99316e0e86a47e5bdcb8e29e5b6d3aa&language=fr&pretty=1";
+   }
 }

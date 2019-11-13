@@ -40,9 +40,7 @@
                     >
                       <el-table-column width="180">
                         <template slot-scope="scope">
-                          <span>
-                            {{scope.row.data}}
-                          </span>
+                          <span>{{scope.row.data}}</span>
                         </template>
                       </el-table-column>
 
@@ -149,13 +147,20 @@ export default {
   methods: {
     getDayName(timestamp) {
       var date = new Date(timestamp * 1000);
-      var dateObj = date.toDateString().split(' ')[0];
+      var dateObj = date.toDateString().split(" ")[0];
       log(dateObj);
       return dateObj.toString();
+    },
+
+    getMyPostition() {
+     
     }
   },
 
   created() {
+
+    this.getMyPostition();
+
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === "getCurrentCityInfo") {
         this.listInfoWeather = state.listInfoWeather;

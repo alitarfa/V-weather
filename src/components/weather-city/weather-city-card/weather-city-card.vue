@@ -24,14 +24,7 @@ export default {
         type: "success"
       });
     },
-
-    // selectCurrentCity() {
-    //   log("selected city : " + this.info.name);
-    //   this.$store
-    //     .dispatch("getCityInfoByNameAction", this.info.name)
-    //     .then(() => this.openNotification(this.info.name));
-    // }
-
+ 
   }
 };
 </script>
